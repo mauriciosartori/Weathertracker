@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,11 +33,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
+import com.nooro.weathertracker.R
 import com.nooro.weathertracker.network.CityDetails
 import com.nooro.weathertracker.network.CityItem
 import com.nooro.weathertracker.network.Condition
@@ -84,7 +87,20 @@ fun WeatherScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
             onQueryChange = setSearchQuery,
             onSearch = { viewModel.searchCities(searchQuery) }
         )
-        if (selectedCity == null) {
+
+        if (selectedCity == null && cities.isEmpty()) {
+            // Show "No City Selected" message
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(text = stringResource(id = R.string.no_city_selected))
+                Text(text = stringResource(id = R.string.please_search_for_city))
+            }
+        } else if (selectedCity == null) {
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -123,15 +139,15 @@ fun SelectedCityDetails(city: CityDetails?, onBackClick: () -> Unit) {
                 .padding(16.dp)
         ) {
             Text(
-                text = "City: ${it.location.name}",
+                text = "${stringResource(id = R.string.city_label)}: ${it.location.name}",
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "Temperature: ${it.current.temp_c}",
+                text = "${stringResource(id = R.string.temperature_label)}: ${it.current.temp_c}",
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "Condition: ${it.current.condition.text}",
+                text = "${stringResource(id = R.string.condition_label)}: ${it.current.condition.text}",
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             GlideImage(
@@ -140,20 +156,20 @@ fun SelectedCityDetails(city: CityDetails?, onBackClick: () -> Unit) {
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "Humidity: ${it.current.humidity}",
+                text = "${stringResource(id = R.string.humidity_label)}: ${it.current.humidity}",
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "UV: ${it.current.uv}",
+                text = "${stringResource(id = R.string.uv_label)}: ${it.current.uv}",
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "Feels like: ${it.current.feelslike_c}",
+                text = "${stringResource(id = R.string.feels_like_label)}: ${it.current.feelslike_c}",
                 modifier = Modifier.padding(bottom = 8.dp)
             )
 
             Text(
-                text = "Back to List",
+                text = stringResource(id = R.string.back_to_list),
                 modifier = Modifier
                     .padding(top = 16.dp)
                     .clickable { onBackClick() }
@@ -161,6 +177,7 @@ fun SelectedCityDetails(city: CityDetails?, onBackClick: () -> Unit) {
         }
     }
 }
+
 
 @Composable
 fun SearchBar(
@@ -181,7 +198,7 @@ fun SearchBar(
                 .weight(1f)
                 .padding(end = 8.dp),
             singleLine = true,
-            placeholder = { Text("Search for a city") },
+            placeholder = { Text(stringResource(id = R.string.search_city_placeholder)) },
             keyboardActions = KeyboardActions(
                 onSearch = { onSearch() }
             ),
@@ -192,7 +209,7 @@ fun SearchBar(
         IconButton(onClick = { onSearch() }) {
             Icon(
                 imageVector = Icons.Default.Search,
-                contentDescription = "Search Icon"
+                contentDescription = stringResource(id = R.string.search_icon_description)
             )
         }
     }
