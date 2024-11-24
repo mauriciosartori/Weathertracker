@@ -33,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -85,39 +86,45 @@ fun WeatherScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
         SearchBar(
             query = searchQuery,
             onQueryChange = setSearchQuery,
-            onSearch = { viewModel.searchCities(searchQuery) }
+            onSearch = {
+                viewModel.selectCity(null) // Clear selected city
+                viewModel.searchCities(searchQuery) // Perform the search
+            }
         )
 
-        if (selectedCity == null && cities.isEmpty()) {
-            // Show "No City Selected" message
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(text = stringResource(id = R.string.no_city_selected))
-                Text(text = stringResource(id = R.string.please_search_for_city))
-            }
-        } else if (selectedCity == null) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp)
-            ) {
-                items(cities) { city ->
-                    CityItem(city = city, onClick = { viewModel.selectCity(city) })
+        when {
+            selectedCity == null && cities.isEmpty() -> {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
+                    Text(text = stringResource(id = R.string.no_city_selected))
+                    Text(text = stringResource(id = R.string.please_search_for_city))
                 }
             }
-        } else {
-            SelectedCityDetails(
-                city = selectedCity,
-                onBackClick = { viewModel.selectCity(null) }
-            )
+
+            selectedCity == null -> {
+                LazyColumn(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp)
+                ) {
+                    items(cities) { city ->
+                        CityItem(city = city, onClick = { viewModel.selectCity(city) })
+                    }
+                }
+            }
+
+            else -> {
+                SelectedCityDetails(city = selectedCity)
+            }
         }
     }
 }
+
 
 @Composable
 fun CityItem(city: CityItem, onClick: (() -> Unit)? = null) {
@@ -131,7 +138,7 @@ fun CityItem(city: CityItem, onClick: (() -> Unit)? = null) {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun SelectedCityDetails(city: CityDetails?, onBackClick: () -> Unit) {
+fun SelectedCityDetails(city: CityDetails?) {
     city?.let {
         Column(
             modifier = Modifier
@@ -139,15 +146,15 @@ fun SelectedCityDetails(city: CityDetails?, onBackClick: () -> Unit) {
                 .padding(16.dp)
         ) {
             Text(
-                text = "${stringResource(id = R.string.city_label)}: ${it.location.name}",
+                text = "City: ${it.location.name}",
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "${stringResource(id = R.string.temperature_label)}: ${it.current.temp_c}",
+                text = "Temperature: ${it.current.temp_c}",
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "${stringResource(id = R.string.condition_label)}: ${it.current.condition.text}",
+                text = "Condition: ${it.current.condition.text}",
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             GlideImage(
@@ -156,28 +163,20 @@ fun SelectedCityDetails(city: CityDetails?, onBackClick: () -> Unit) {
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "${stringResource(id = R.string.humidity_label)}: ${it.current.humidity}",
+                text = "Humidity: ${it.current.humidity}",
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "${stringResource(id = R.string.uv_label)}: ${it.current.uv}",
+                text = "UV: ${it.current.uv}",
                 modifier = Modifier.padding(bottom = 8.dp)
             )
             Text(
-                text = "${stringResource(id = R.string.feels_like_label)}: ${it.current.feelslike_c}",
+                text = "Feels like: ${it.current.feelslike_c}",
                 modifier = Modifier.padding(bottom = 8.dp)
-            )
-
-            Text(
-                text = stringResource(id = R.string.back_to_list),
-                modifier = Modifier
-                    .padding(top = 16.dp)
-                    .clickable { onBackClick() }
             )
         }
     }
 }
-
 
 @Composable
 fun SearchBar(
@@ -185,6 +184,8 @@ fun SearchBar(
     onQueryChange: (String) -> Unit,
     onSearch: () -> Unit
 ) {
+    val focusManager = LocalFocusManager.current
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -200,13 +201,19 @@ fun SearchBar(
             singleLine = true,
             placeholder = { Text(stringResource(id = R.string.search_city_placeholder)) },
             keyboardActions = KeyboardActions(
-                onSearch = { onSearch() }
+                onSearch = {
+                    focusManager.clearFocus()
+                    onSearch()
+                }
             ),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Search
             )
         )
-        IconButton(onClick = { onSearch() }) {
+        IconButton(onClick = {
+            focusManager.clearFocus()
+            onSearch()
+        }) {
             Icon(
                 imageVector = Icons.Default.Search,
                 contentDescription = stringResource(id = R.string.search_icon_description)
@@ -251,8 +258,7 @@ fun SelectedCityDetailsPreview() {
                     humidity = 50,
                     uv = 5.0
                 )
-            ),
-            onBackClick = {}
+            )
         )
     }
 }
