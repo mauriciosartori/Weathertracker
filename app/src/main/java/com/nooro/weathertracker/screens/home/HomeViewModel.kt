@@ -1,5 +1,6 @@
 package com.nooro.weathertracker.screens.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nooro.weathertracker.network.CityItem
@@ -25,7 +26,7 @@ class HomeViewModel @Inject constructor(
                 val results = weatherService.searchCities(query)
                 _cities.value = results
             } catch (e: Exception) {
-                // Handle errors
+                Log.e("HomeViewModel", "Error searching cities", e)
             }
         }
     }
