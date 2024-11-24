@@ -1,6 +1,5 @@
 package com.nooro.weathertracker.screens.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nooro.weathertracker.network.CityDetails
@@ -24,13 +23,16 @@ class HomeViewModel @Inject constructor(
     private val _selectedCity = MutableStateFlow<CityDetails?>(null)
     val selectedCity: StateFlow<CityDetails?> = _selectedCity
 
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage
+
     fun searchCities(query: String) {
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val results = weatherService.searchCities(query)
                 _cities.value = results
             } catch (e: Exception) {
-                Log.e("HomeViewModel", "Error searching cities", e)
+                _errorMessage.value = "Error fetching cities: ${e.localizedMessage}"
             }
         }
     }
@@ -41,7 +43,7 @@ class HomeViewModel @Inject constructor(
                 val response = weatherService.getCityDetails(query)
                 _selectedCity.value = response
             } catch (e: Exception) {
-                Log.e("HomeViewModel", "Error searching cities", e)
+                _errorMessage.value = "Error fetching forecast: ${e.localizedMessage}"
             }
         }
     }
@@ -52,5 +54,9 @@ class HomeViewModel @Inject constructor(
         } else {
             _selectedCity.value = null
         }
+    }
+
+    fun clearError() {
+        _errorMessage.value = null
     }
 }
