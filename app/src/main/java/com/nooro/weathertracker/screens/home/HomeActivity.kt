@@ -1,4 +1,4 @@
-package com.nooro.weathertracker
+package com.nooro.weathertracker.screens.home
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
