@@ -6,21 +6,27 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -32,12 +38,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.nooro.weathertracker.R
@@ -46,8 +56,14 @@ import com.nooro.weathertracker.network.CityItem
 import com.nooro.weathertracker.network.Condition
 import com.nooro.weathertracker.network.Current
 import com.nooro.weathertracker.network.Location
+import com.nooro.weathertracker.ui.theme.NoCitySelectedTextStyle
+import com.nooro.weathertracker.ui.theme.PleaseSearchForCityTextStyle
+import com.nooro.weathertracker.ui.theme.SearchBarBackgroundColor
+import com.nooro.weathertracker.ui.theme.SearchBarPlaceholderColor
 import com.nooro.weathertracker.ui.theme.WeatherTrackerTheme
+import com.nooro.weathertracker.ui.theme.searchBarColors
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -87,8 +103,8 @@ fun WeatherScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
             query = searchQuery,
             onQueryChange = setSearchQuery,
             onSearch = {
-                viewModel.selectCity(null) // Clear selected city
-                viewModel.searchCities(searchQuery) // Perform the search
+                viewModel.selectCity(null)
+                viewModel.searchCities(searchQuery)
             }
         )
 
@@ -101,8 +117,7 @@ fun WeatherScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.Center
                 ) {
-                    Text(text = stringResource(id = R.string.no_city_selected))
-                    Text(text = stringResource(id = R.string.please_search_for_city))
+                    NoCitySelectedMessage()
                 }
             }
 
@@ -189,17 +204,28 @@ fun SearchBar(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp),
+            .padding(16.dp)
+            .height(46.dp)
+            .background(color = SearchBarBackgroundColor, shape = RoundedCornerShape(16.dp)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         TextField(
-            value = query,
+            value = query.trim(),
             onValueChange = onQueryChange,
             modifier = Modifier
                 .weight(1f)
-                .padding(end = 8.dp),
+                .padding(horizontal = 8.dp),
             singleLine = true,
-            placeholder = { Text(stringResource(id = R.string.search_city_placeholder)) },
+            placeholder = {
+                Text(
+                    text = stringResource(id = R.string.search_location),
+                    color = SearchBarPlaceholderColor,
+                    fontSize = 13.sp,
+                    fontFamily = FontFamily.SansSerif,
+                    fontWeight = FontWeight.Light,
+                    lineHeight = 18.sp
+                )
+            },
             keyboardActions = KeyboardActions(
                 onSearch = {
                     focusManager.clearFocus()
@@ -208,6 +234,11 @@ fun SearchBar(
             ),
             keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Search
+            ),
+            colors = searchBarColors(),
+            textStyle = MaterialTheme.typography.bodyMedium.copy(
+                fontSize = 13.sp,
+                lineHeight = 18.sp
             )
         )
         IconButton(onClick = {
@@ -216,12 +247,30 @@ fun SearchBar(
         }) {
             Icon(
                 imageVector = Icons.Default.Search,
-                contentDescription = stringResource(id = R.string.search_icon_description)
+                contentDescription = stringResource(id = R.string.search_icon_description),
+                modifier = Modifier.size(17.49.dp),
+                tint = Color(0xFFC4C4C4)
             )
         }
     }
 }
 
+@Composable
+fun NoCitySelectedMessage() {
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(id = R.string.no_city_selected),
+            style = NoCitySelectedTextStyle
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Text(
+            text = stringResource(id = R.string.please_search_for_city),
+            style = PleaseSearchForCityTextStyle
+        )
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
