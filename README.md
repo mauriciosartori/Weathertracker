@@ -9,6 +9,21 @@ Whether you're exploring the code or just curious about how it works, this proje
 straightforward and fun to use.
 
 ---
+## Screenshots
+
+### Home Screen
+![Home Screen](./screenshots/m1.png)
+*Dimensions: 1080 x 2340 px (18:9 aspect ratio)*
+
+### Search Functionality
+![Search](./screenshots/m2.png)
+*Dimensions: 1080 x 2340 px (18:9 aspect ratio)*
+
+### Weather Details
+![Weather Details](./screenshots/m3.png)
+*Dimensions: 1080 x 2340 px (18:9 aspect ratio)*
+
+---
 
 ## Setup Instructions
 

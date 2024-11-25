@@ -236,7 +236,7 @@ fun SelectedCityDetails(city: CityDetails?) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             GlideImage(
-                model = "https:${it.current.condition.icon}",
+                model = if (it.current.condition.icon.startsWith("http")) it.current.condition.icon else "https:${it.current.condition.icon}",
                 contentDescription = "Weather Icon",
                 modifier = Modifier
                     .size(123.dp)
