@@ -12,8 +12,8 @@ interface WeatherService {
         @Query("q") query: String
     ): List<CityItem>
 
-    @GET("forecast.json")
-    suspend fun getCityDetails(
+    @GET("v1/forecast.json")
+    suspend fun getCityForecast(
         @Query("q") query: String,
         @Query("days") days: Int = 1
     ): CityDetails

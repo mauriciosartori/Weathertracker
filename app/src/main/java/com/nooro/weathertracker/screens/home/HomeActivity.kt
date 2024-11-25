@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,9 +43,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -89,7 +92,6 @@ fun WeatherScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
     val cities by viewModel.cities.collectAsState()
     val selectedCity by viewModel.selectedCity.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
-
     val (searchQuery, setSearchQuery) = remember { mutableStateOf("") }
     val context = LocalContext.current
 
@@ -141,14 +143,57 @@ fun WeatherScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
 }
 
 
+@OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CityItem(city: CityItem, onClick: (() -> Unit)? = null) {
-    Text(
-        text = "${city.name}, ${city.country} (Lat: ${city.lat}, Lon: ${city.lon})",
+    Row(
         modifier = Modifier
-            .padding(16.dp)
+            .width(336.dp)
+            .height(117.dp)
+            .padding(start = 20.dp, top = 16.dp)
             .clickable(enabled = onClick != null) { onClick?.invoke() }
-    )
+            .background(
+                color = MaterialTheme.colorScheme.surface,
+                shape = RoundedCornerShape(topStart = 16.dp)
+            ),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Column(
+            modifier = Modifier.padding(start = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                text = city.name,
+                style = TextStyle(
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    lineHeight = 30.sp,
+                    color = Color(0xFF2C2C2C),
+                    textAlign = TextAlign.Center
+                )
+            )
+            Text(
+                text = city.temp?.let { "$it°" } ?: "Loading...",
+                modifier = Modifier.width(85.dp),
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Normal,
+                    lineHeight = 22.sp,
+                    color = Color(0xFF2C2C2C)
+                )
+            )
+        }
+        city.icon?.let {
+            GlideImage(
+                model = it,
+                contentDescription = "Weather Icon",
+                modifier = Modifier
+                    .size(42.dp)
+                    .padding(end = 16.dp)
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalGlideComposeApi::class)

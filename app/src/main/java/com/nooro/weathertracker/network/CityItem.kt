@@ -6,5 +6,7 @@ data class CityItem(
     val country: String,
     val lat: Double,
     val lon: Double,
-    val url: String
+    val url: String,
+    val temp: Double? = null,
+    val icon: String? = null
 )
