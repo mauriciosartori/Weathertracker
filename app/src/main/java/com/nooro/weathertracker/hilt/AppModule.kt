@@ -1,7 +1,8 @@
 package com.nooro.weathertracker.hilt
 
 import android.app.Application
-import com.nooro.weathertracker.database.AppDatabase
+import android.content.Context
+import com.nooro.weathertracker.WeatherTrackerApp
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,7 +20,5 @@ class AppModule {
 
     @Provides
     @Singleton
-    fun providesAppDatabase(application: Application): AppDatabase {
-        return AppDatabase()
-    }
+    fun provideContext(application: Application): Context = application.applicationContext
 }
