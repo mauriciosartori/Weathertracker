@@ -11,17 +11,24 @@ straightforward and fun to use.
 ---
 ## Screenshots
 
-### Home Screen
-![Home Screen](./screenshots/m1.png)
-*Dimensions: 1080 x 2340 px (18:9 aspect ratio)*
-
-### Search Functionality
-![Search](./screenshots/m2.png)
-*Dimensions: 1080 x 2340 px (18:9 aspect ratio)*
-
-### Weather Details
-![Weather Details](./screenshots/m3.png)
-*Dimensions: 1080 x 2340 px (18:9 aspect ratio)*
+<div align="center">
+    <table>
+        <tr>
+            <td align="center">
+                <strong>Home Screen</strong><br>
+                <img src="./screenshots/m1.png" alt="Main Screen" width="250"/>
+            </td>
+            <td align="center">
+                <strong>Search Functionality</strong><br>
+                <img src="./screenshots/m2.png" alt="Search Functionality" width="250"/>
+            </td>
+            <td align="center">
+                <strong>Weather Details</strong><br>
+                <img src="./screenshots/m3.png" alt="Weather Details" width="250"/>
+            </td>
+        </tr>
+    </table>
+</div>
 
 ---
 
