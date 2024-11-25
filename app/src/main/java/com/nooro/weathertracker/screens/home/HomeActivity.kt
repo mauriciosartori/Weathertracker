@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -142,25 +141,26 @@ fun WeatherScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
     }
 }
 
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun CityItem(city: CityItem, onClick: (() -> Unit)? = null) {
     Row(
         modifier = Modifier
-            .width(336.dp)
-            .height(117.dp)
-            .padding(start = 20.dp, top = 16.dp)
+            .fillMaxWidth()
+            .height(140.dp)
+            .padding(horizontal = 16.dp, vertical = 8.dp)
             .clickable(enabled = onClick != null) { onClick?.invoke() }
             .background(
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(topStart = 16.dp)
+                color = Color(0xFFF2F2F2),
+                shape = RoundedCornerShape(16.dp)
             ),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Column(
-            modifier = Modifier.padding(start = 16.dp),
+            modifier = Modifier
+                .weight(1f) 
+                .padding(start = 30.dp, top = 25.dp, bottom = 20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
@@ -170,31 +170,38 @@ fun CityItem(city: CityItem, onClick: (() -> Unit)? = null) {
                     fontWeight = FontWeight.SemiBold,
                     lineHeight = 30.sp,
                     color = Color(0xFF2C2C2C),
-                    textAlign = TextAlign.Center
+                    textAlign = TextAlign.Start
                 )
             )
             Text(
                 text = city.temp?.let { "$it°" } ?: "Loading...",
-                modifier = Modifier.width(85.dp),
                 style = TextStyle(
-                    fontSize = 18.sp,
+                    fontSize = 50.sp,
                     fontWeight = FontWeight.Normal,
-                    lineHeight = 22.sp,
+                    lineHeight = 60.sp,
                     color = Color(0xFF2C2C2C)
                 )
             )
         }
-        city.icon?.let {
-            GlideImage(
-                model = it,
-                contentDescription = "Weather Icon",
-                modifier = Modifier
-                    .size(42.dp)
-                    .padding(end = 16.dp)
-            )
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(end = 30.dp),
+            horizontalAlignment = Alignment.End
+        ) {
+            city.icon?.let {
+                GlideImage(
+                    model = it,
+                    contentDescription = "Weather Icon",
+                    modifier = Modifier
+                        .size(80.dp)
+                        .padding(end = 16.dp)
+                )
+            }
         }
     }
 }
+
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
