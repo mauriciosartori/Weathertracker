@@ -248,7 +248,7 @@ fun SelectedCityDetails(city: CityDetails?) {
                         shape = RoundedCornerShape(16.dp)
                     )
                     .padding(16.dp),
-                horizontalArrangement = Arrangement.spacedBy(40.dp),
+                horizontalArrangement = Arrangement.spacedBy(45.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(

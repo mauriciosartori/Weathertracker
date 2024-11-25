@@ -45,23 +45,26 @@ class HomeViewModel @Inject constructor(private val weatherService: WeatherServi
     }
 
     fun selectCity(city: CityItem?) {
-        _selectedCity.value = city?.let {
-            CityDetails(
-                location = Location(it.name),
-                current = Current(
-                    temp_c = it.temp ?: 0.0,
-                    feelslike_c = it.temp ?: 0.0,
-                    condition = Condition(
-                        text = "Unknown",
-                        icon = ""
-                    ),
-                    humidity = 0,
-                    uv = 0.0
-                )
-            )
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                _selectedCity.value = city?.let {
+                    val forecast = weatherService.getCityForecast("${it.lat},${it.lon}")
+                    CityDetails(
+                        location = Location(it.name),
+                        current = Current(
+                            temp_c = forecast.current.temp_c,
+                            feelslike_c = forecast.current.feelslike_c,
+                            condition = forecast.current.condition,
+                            humidity = forecast.current.humidity,
+                            uv = forecast.current.uv
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                _errorMessage.value = "Error fetching city details"
+            }
         }
     }
-
 
     fun clearError() {
         _errorMessage.value = null
