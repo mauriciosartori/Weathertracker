@@ -17,6 +17,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -62,6 +64,11 @@ import com.nooro.weathertracker.ui.theme.NoCitySelectedTextStyle
 import com.nooro.weathertracker.ui.theme.PleaseSearchForCityTextStyle
 import com.nooro.weathertracker.ui.theme.SearchBarBackgroundColor
 import com.nooro.weathertracker.ui.theme.SearchBarPlaceholderColor
+import com.nooro.weathertracker.ui.theme.WeatherDetailsCellBackgroundColor
+import com.nooro.weathertracker.ui.theme.WeatherDetailsCityNameTextStyle
+import com.nooro.weathertracker.ui.theme.WeatherDetailsLabelTextStyle
+import com.nooro.weathertracker.ui.theme.WeatherDetailsTemperatureTextStyle
+import com.nooro.weathertracker.ui.theme.WeatherDetailsValueTextStyle
 import com.nooro.weathertracker.ui.theme.WeatherTrackerTheme
 import com.nooro.weathertracker.ui.theme.searchBarColors
 import dagger.hilt.android.AndroidEntryPoint
@@ -202,7 +209,6 @@ fun CityItem(city: CityItem, onClick: (() -> Unit)? = null) {
     }
 }
 
-
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
 fun SelectedCityDetails(city: CityDetails?) {
@@ -210,40 +216,89 @@ fun SelectedCityDetails(city: CityDetails?) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Text(
-                text = "City: ${it.location.name}",
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                text = "Temperature: ${it.current.temp_c}",
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-            Text(
-                text = "Condition: ${it.current.condition.text}",
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
             GlideImage(
-                model = if (it.current.condition.icon.isNotEmpty()) "https:${it.current.condition.icon}" else null,
+                model = "https:${it.current.condition.icon}",
                 contentDescription = "Weather Icon",
-                modifier = Modifier.padding(bottom = 8.dp)
+                modifier = Modifier
+                    .size(123.dp)
             )
+
             Text(
-                text = "Humidity: ${it.current.humidity}",
-                modifier = Modifier.padding(bottom = 8.dp)
+                text = it.location.name,
+                style = WeatherDetailsCityNameTextStyle
             )
+
             Text(
-                text = "UV: ${it.current.uv}",
-                modifier = Modifier.padding(bottom = 8.dp)
+                text = "${it.current.temp_c}°",
+                modifier = Modifier
+                    .width(105.dp)
+                    .height(70.dp),
+                style = WeatherDetailsTemperatureTextStyle
             )
-            Text(
-                text = "Feels like: ${it.current.feelslike_c}",
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
+
+
+            Row(
+                modifier = Modifier
+                    .wrapContentWidth()
+                    .background(
+                        color = WeatherDetailsCellBackgroundColor,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .padding(16.dp),
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Humidity",
+                        style = WeatherDetailsLabelTextStyle
+                    )
+                    Text(
+                        text = "${it.current.humidity}%",
+                        style = WeatherDetailsValueTextStyle
+                    )
+                }
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "UV",
+                        style = WeatherDetailsLabelTextStyle
+                    )
+                    Text(
+                        text = "${it.current.uv}",
+                        style = WeatherDetailsValueTextStyle
+                    )
+                }
+
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    Text(
+                        text = "Feels Like",
+                        style = WeatherDetailsLabelTextStyle
+                    )
+                    Text(
+                        text = "${it.current.feelslike_c}°",
+                        style = WeatherDetailsValueTextStyle
+                    )
+                }
+            }
+
         }
     }
 }
+
 
 @Composable
 fun SearchBar(
