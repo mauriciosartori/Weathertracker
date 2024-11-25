@@ -1,5 +1,3 @@
-# Weathertracker
-
 # Weather Tracker
 
 Weather Tracker is a simple and useful app to check the weather wherever you are. It’s designed to
