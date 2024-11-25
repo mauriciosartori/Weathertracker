@@ -25,17 +25,15 @@ val WeatherDetailsTemperatureTextStyle = TextStyle(
 )
 
 val WeatherDetailsLabelTextStyle = TextStyle(
-    fontSize = 16.sp,
-    fontWeight = FontWeight.SemiBold,
-    textAlign = TextAlign.Center,
-    color = Color(0xFF2C2C2C)
+    color = Color(0xFFC4C4C4),
+    fontSize = 12.sp,
+    fontWeight = FontWeight.Normal
 )
 
 val WeatherDetailsValueTextStyle = TextStyle(
-    fontSize = 16.sp,
-    fontWeight = FontWeight.Normal,
-    textAlign = TextAlign.Center,
-    color = Color(0xFF2C2C2C)
+    color = Color(0xFF9A9A9A),
+    fontSize = 15.sp,
+    fontWeight = FontWeight.Medium
 )
 
 val WeatherDetailsCellBackgroundColor = Color(0xFFF2F2F2)

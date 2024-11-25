@@ -166,7 +166,7 @@ fun CityItem(city: CityItem, onClick: (() -> Unit)? = null) {
     ) {
         Column(
             modifier = Modifier
-                .weight(1f) 
+                .weight(1f)
                 .padding(start = 30.dp, top = 25.dp, bottom = 20.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -240,7 +240,6 @@ fun SelectedCityDetails(city: CityDetails?) {
                 style = WeatherDetailsTemperatureTextStyle
             )
 
-
             Row(
                 modifier = Modifier
                     .wrapContentWidth()
@@ -249,7 +248,7 @@ fun SelectedCityDetails(city: CityDetails?) {
                         shape = RoundedCornerShape(16.dp)
                     )
                     .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceEvenly,
+                horizontalArrangement = Arrangement.spacedBy(40.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(
@@ -294,7 +293,6 @@ fun SelectedCityDetails(city: CityDetails?) {
                     )
                 }
             }
-
         }
     }
 }
