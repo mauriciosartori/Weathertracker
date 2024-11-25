@@ -26,6 +26,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -98,6 +99,7 @@ fun WeatherScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
     val cities by viewModel.cities.collectAsState()
     val selectedCity by viewModel.selectedCity.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+    val isLoading by viewModel.isLoading.collectAsState()
     val (searchQuery, setSearchQuery) = remember { mutableStateOf("") }
     val context = LocalContext.current
 
@@ -117,6 +119,19 @@ fun WeatherScreen(modifier: Modifier = Modifier, viewModel: HomeViewModel) {
         )
 
         when {
+            isLoading -> {
+                // Show a spinner while loading
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    CircularProgressIndicator()
+                }
+            }
+
             selectedCity == null && cities.isEmpty() -> {
                 Column(
                     modifier = Modifier

@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nooro.weathertracker.network.CityDetails
 import com.nooro.weathertracker.network.CityItem
-import com.nooro.weathertracker.network.Condition
 import com.nooro.weathertracker.network.Current
 import com.nooro.weathertracker.network.Location
 import com.nooro.weathertracker.network.WeatherService
@@ -26,8 +25,12 @@ class HomeViewModel @Inject constructor(private val weatherService: WeatherServi
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
     fun searchCities(query: String) {
         viewModelScope.launch {
+            _isLoading.value = true
             try {
                 val searchResults = weatherService.searchCities(query)
                 val citiesWithForecast = searchResults.map { city ->
@@ -40,6 +43,8 @@ class HomeViewModel @Inject constructor(private val weatherService: WeatherServi
                 _cities.value = citiesWithForecast
             } catch (e: Exception) {
                 _errorMessage.value = "Error fetching cities or forecasts"
+            } finally {
+                _isLoading.value = false
             }
         }
     }
